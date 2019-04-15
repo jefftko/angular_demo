@@ -1,0 +1,124 @@
+@import '~@delon/theme/styles/default';
+:host ::ng-deep {
+  .btn1 {
+    background-color: #33CC33;
+    border-color: #33CC33;
+    color: @white;
+  }
+  .btn2 {
+    background-color: #009966;
+    border-color: #009966;
+    color: @white;
+  }
+  .btn3 {
+    background-color: #eb2f96;
+    border-color: #eb2f96;
+    color: @white;
+  }
+
+  button[disabled] {
+    color: rgba(0,0,0,.25);
+    background-color: #f5f5f5;
+    border-color: #d9d9d9;
+  }
+
+
+  .se__control span.ant-calendar-picker {
+    width: 100% !important;
+    display: block;
+  }
+
+  nz-form-label[nolabel=true] label:after {
+    content: '';
+  }
+
+  nz-form-control[required=true] input,
+  td[required=true] input,
+  nz-form-control[required=true] div.ant-select-selection,
+  td[required=true] div.ant-select-selection {
+    background-color: rgb(255, 246, 143);
+  }
+
+  nz-form-control[required=false] input {
+    background-color: #fff;
+  }
+
+  table td .ant-input-suffix {
+    z-index: 0;
+  }
+
+  input[disabled=true], input[disabled] {
+    background-color: rgb(238, 238, 238) !important;
+  }
+
+  .has-error input, .has-error div.ant-select-selection, td.has-error,
+  .dx-datagrid-rowsview td input.ng-invalid.ng-dirty,
+  .ant-table-row.ng-star-inserted .ng-invalid.ng-dirty
+  {
+    border-color: #f5222d;
+    background-color: rgb(255, 199, 214) !important;
+    color: rgb(156, 45, 117) !important;
+  }
+
+  .has-error label {
+    color: @error-color !important;
+    font-weight: bold;
+  }
+
+  input[disabled=false] {
+    background-color: #fff;
+  }
+
+  th.hidden_field, td.hidden_field {
+    width: 0px;
+    padding: 0px;
+    overflow: hidden;
+    display: none;
+  }
+
+  div.hidden-input {
+    display: none;
+    width: 0px;
+    height: 0px;
+    overflow: hidden;
+  }
+  .dx-datagrid-headers .dx-datagrid-action,
+  .dx-datagrid-headers .dx-cell-focus-disabled {
+    font-family: "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    background: #fafafa;
+    transition: background 0.3s ease;
+    text-align: left;
+    color: rgba(0, 0, 0, 0.85);
+    font-weight: 500;
+    border-bottom: 1px solid #e8e8e8;
+    padding: 16px 16px;
+    border-right-color: #fafafa;
+  }
+
+  .dx-row {
+    position: relative;
+  }
+
+  .dx-datagrid-headers td.can-delete, .dx-datagrid-rowsview .dx-row.main-row td.can-delete {
+    position: sticky;
+    z-index: 1;
+    right: 0px;
+    box-shadow: -6px 0 6px 0px rgba(0, 0, 0, 0.05);
+    background-color: #fff;
+  }
+
+  .dx-datagrid-rowsview .dx-row.main-row td {
+    padding: 16px !important;
+    border-bottom: 1px solid #e8e8e8;
+    font-family: "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+  }
+
+  .dx-datagrid-rowsview .dx-row td input {
+    font-family: "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+  }
+
+  .dx-datagrid-rowsview.dx-empty {
+    height: 48px;
+  }
+
+}

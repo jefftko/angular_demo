@@ -1,0 +1,56 @@
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: contractfront
+  namespace: chinagas
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v0
+      kind:  Mapping
+      name:  contractfront_mapping
+      host:  chinagas.micropaas.ies
+      prefix:  /contract/
+      service: contractfront.chinagas:80
+      timeout_ms: 900000
+spec:
+  ports:
+  - name: http-contract-fontend
+    port: 80
+    targetPort: contractfront
+  selector:
+    app: contractfront
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: contractfront
+  namespace: chinagas
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: contractfront
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: contractfront
+    spec:
+      imagePullSecrets:
+        - name: regcred-atcdevops
+      containers:
+      - name: contractfront
+        image: harbor.atcdevops.accenture.com/chinagas/ies_asset/contract_frontend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: contractfront
+

@@ -1,0 +1,79 @@
+<form nz-form [formGroup]="formData.step2FormGroup" class="bg-white">
+  <!--<button nz-button (click)="doSubmit()">提交</button>-->
+  <nz-tabset>
+    <nz-tab nzTitle="主要信息" (nzClick)="switchTab(0)">
+      <nz-table [nzScroll]="{x: tabWidth +'px'}" [nzData]="tab1FormArray.value" nzShowPagination="false" formArrayName="tab1">
+        <thead>
+        <tr>
+          <th nzLeft="0px" nzWidth="80px">行号</th>
+          <th *ngFor="let ctrl of tabPubCtrls" [nzWidth]="ctrl.width + 'px'">{{ctrl.label}}</th>
+          <th *ngFor="let ctrl of tab1Controls" [nzWidth]="ctrl.width  + 'px'">{{ctrl.label}}</th>
+          <th class="hidden_field">&nbsp;</th>
+          <th nzWidth="80px" nzRight="0px">删除</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let form of tab1FormArray.controls; let i = index;" [formGroupName]="i">
+          <td nzLeft="0px">{{i + 1}}</td>
+
+          <ng-container *ngFor="let ctrl of tab1RowCtrls[i]">
+            <td [nzLeft]="ctrl.nzLeft" [attr.required]="ctrl.required" [ngClass]="{'has-error' : ctrl.error, 'hidden_field' : ctrl.type == 'hidden'}">
+              <app-control [ctrl]="ctrl" [form]="form" [tableIndex]="i"></app-control>
+            </td>
+          </ng-container>
+
+          <td nzRight="0px"><button nzType="danger" nzSize="small" nz-button (click)="removeTab1Line(i)">删除</button></td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </nz-tab>
+    <nz-tab nzTitle="关联信息"  (nzClick)="switchTab(1)">
+      <nz-table [nzScroll]="{x: tabWidth +'px'}" [nzData]="tab2FormArray.value" nzShowPagination="false" formArrayName="tab2">
+        <thead>
+        <tr>
+          <th nzLeft="0px" nzWidth="80px">行号</th>
+          <th *ngFor="let ctrl of tabPubCtrls" [nzWidth]="(ctrl.width||0) + 'px'">{{ctrl.label}}</th>
+          <th *ngFor="let ctrl of tab2Controls" [nzWidth]="(ctrl.width||0)  + 'px'">{{ctrl.label}}</th>
+          <th class="hidden_field">&nbsp;</th>
+          <th nzWidth="80px" nzRight="0px">删除</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let form of tab2FormArray.controls; let i = index;" [formGroupName]="i">
+          <td nzLeft="0px">{{i + 1}}</td>
+          <ng-container *ngFor="let ctrl of tab2RowCtrls[i]">
+            <td [nzLeft]="ctrl.nzLeft" [attr.required]="ctrl.required" [ngClass]="{'has-error' : ctrl.error, 'hidden_field' : ctrl.type == 'hidden'}">
+              <app-control [ctrl]="ctrl" [form]="form" [tableIndex]="i"></app-control>
+            </td>
+          </ng-container>
+          <td nzRight="0px"><button nzType="danger" nzSize="small" nz-button (click)="removeTab1Line(i)">删除</button></td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </nz-tab>
+  </nz-tabset>
+
+  <div nz-row nzGutter="16" class="mt-md">
+    <div nz-col nzSm="24" nzXs="24">
+      <nz-form-control [nzSm]="2" [nzXs]="2">
+        <button class="btn1" nz-button (click)="addRow()">添加一行</button>
+      </nz-form-control>
+      <nz-form-label [nzSm]="1" [nzXs]="1">税率</nz-form-label>
+      <nz-form-control [nzSm]="2" [nzXs]="2">
+        <nz-select formControlName="taxRate" nzAllowClear>
+          <nz-option *ngFor="let option of taxOptions" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+        </nz-select>
+      </nz-form-control>
+      <nz-form-control [nzSm]="2" [nzXs]="2">
+        <button class="btn1" nz-button (click)="onTaxChange()">修改税率</button>
+      </nz-form-control>
+      <nz-form-label [nzSm]="2" [nzXs]="2">到货时间</nz-form-label>
+      <nz-form-control [nzSm]="3" [nzXs]="3">
+        <nz-date-picker id="" formControlName="deliveryDate"></nz-date-picker>
+      </nz-form-control>
+      <nz-form-control [nzSm]="2" [nzXs]="2">
+        <button class="btn1" nz-button>修改到货时间</button>
+      </nz-form-control>
+    </div>
+  </div>
+</form>

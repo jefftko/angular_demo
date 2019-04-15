@@ -1,0 +1,57 @@
+<form nz-form [formGroup]="form">
+
+  <nz-modal [(nzVisible)]="isAmountInvalid" nzWidth="900px" nzMask nzClosable [nzStyle]="{top : '20px'}"
+            nzTitle="错误信息" (nzOnCancel)="closeMessageModal()" (nzOnOk)="closeMessageModal()" [nzCancelText]="null">
+    <div nz-row nzGutter="16" class="bg-white">
+      <div nz-col nzXs="24" nzSm="24">
+        <nz-table #errTable [nzData]="errData" nzShowPagination="false" nzBordered
+                  [nzWidthConfig]="['80px','120px','150px','80px','120px','120px','150px']">
+          <thead>
+          <tr>
+            <th colspan="3">合同款项</th>
+            <th colspan="4">付款条件</th>
+          </tr>
+          <tr>
+            <th>税率%</th>
+            <th>总付款额</th>
+            <th>总付款额<br>(不含税)</th>
+            <th>行号</th>
+            <th>付款比例</th>
+            <th>总付款额</th>
+            <th>总付款额<br>(不含税)</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let data of errTable.data">
+            <td *ngIf="data.rowSpan" [rowSpan]="data.rowSpan">{{data.tax}}%</td>
+            <td *ngIf="data.rowSpan" [rowSpan]="data.rowSpan" [ngClass]="{'has-error' : data.invalid}">
+              合同行：{{data.paymentAmountLineTotal}}<br>合计：{{data.paymentAmountTotal}}<br>
+              <span style="color: #ff0000" *ngIf="data.invalid">
+                <i nz-icon type="exclamation-circle"></i>数值错误，付款总金额与行信息不符！
+              </span>
+            </td>
+            <td *ngIf="data.rowSpan" [rowSpan]="data.rowSpan" [ngClass]="{'has-error' : data.invalid}">
+              合同行：{{data.paymentAmountNoTaxLineTotal}}<br>合计：{{data.paymentAmountNoTaxTotal}}<br>
+              <span style="color: #ff0000" *ngIf="data.invalid">
+                <i nz-icon type="exclamation-circle"></i>数值错误，付款总金额与行信息不符！
+              </span>
+            </td>
+            <td>{{data.lineNo}}</td>
+            <td>{{data.paymentPercent}}%</td>
+            <td>{{data.paymentAmount}}</td>
+            <td>{{data.norateContractAmount}}</td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </div>
+    </div>
+  </nz-modal>
+
+  <app-grid-control [template]="tabCtrlsTpl" [config]="EDIT_GRID_CFG"></app-grid-control>
+
+  <div nz-row nzGutter="16" class="mt-md">
+    <div nz-col nzSm="24" nzXs="24">
+      <button class="btn1" nz-button (click)="addRow()">添加一行</button>
+    </div>
+  </div>
+</form>

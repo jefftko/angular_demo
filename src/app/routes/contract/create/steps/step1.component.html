@@ -1,0 +1,90 @@
+<form nz-form [formGroup]="formData.step1FormGroup">
+
+  <!--<button nz-button nzType="primary" (click)="removeDisabled()">Remove disabled</button>-->
+  <!--<input nz-input name="testInput" formControlName="testInput">-->
+    <div class="hidden-input">
+      <ng-container *ngFor="let ctrl of hiddenControls">
+        <app-control [ctrl]="ctrl" [form]="formData.step1FormGroup"></app-control>
+      </ng-container>
+    </div>
+
+    <div nz-row nzGutter="16" class="bg-white">
+      <div nz-col nzXs="24" nzSm="24">
+        <nz-form-item>
+          <ng-container *ngFor="let ctrl of basicControls">
+            <nz-form-label [nzSm]="2" [nzXs]="24" [nzRequired]="ctrl.required" [nzFor]="ctrl.name" [ngClass]="{'has-error' : ctrl.error}">
+              <ng-container *ngIf="ctrl.error">
+                <span nzPlacement="topLeft" nz-tooltip [nzTitle]="ctrl.errorMsg">{{ctrl.label}}</span>
+              </ng-container>
+              <ng-container *ngIf="!ctrl.error">
+                {{ctrl.label}}
+              </ng-container>
+            </nz-form-label>
+            <nz-form-control [nzSm]="ctrl.colSpan||4" [nzXs]="24" nzHasFeedback [attr.required]="ctrl.required" [ngClass]="{'has-error' : ctrl.error}">
+              <app-control [ctrl]="ctrl" [form]="formData.step1FormGroup"></app-control>
+            </nz-form-control>
+            <ng-container *ngIf="ctrl.nl">
+              <nz-form-control [nzSm]="24" [nzXs]="24"></nz-form-control>
+            </ng-container>
+          </ng-container>
+        </nz-form-item>
+      </div>
+    </div>
+    <nz-divider></nz-divider>
+    <div class="text-lg">交易方及联系人</div>
+    <nz-divider></nz-divider>
+    <div nz-row nzGutter="16" class="bg-white">
+      <div nz-col nzXs="24" nzSm="24">
+        <nz-table [nzScroll]="{x:'3000px'}" [nzData]="tradeAndContact.value" nzShowPagination="false" formArrayName="tradeAndContact">
+          <thead>
+          <tr>
+            <ng-container *ngFor="let ctrl of tabControlsTpl">
+              <th [nzWidth]="(ctrl.width) + 'px'" [ngClass]="{hidden_field : ctrl.type == 'hidden'}">{{ctrl.label}}</th>
+            </ng-container>
+            <th nzwidth="150px" nzRight="0px">删除</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let form of tradeAndContact.controls; let i = index;" [formGroupName]="i">
+            <ng-container *ngFor="let ctrl of tabControls[i]">
+              <td [ngClass]="{hidden_field : ctrl.type == 'hidden'}">
+                <app-control [ctrl]="ctrl" [form]="form" [tableIndex]="i"></app-control>
+              </td>
+            </ng-container>
+            <td nzwidth="150px" nzRight="0px">
+              <button nzType="danger" nzSize="default" nz-button (click)="removeLineOfTradeAndContact(i)">删除</button>
+            </td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </div>
+      <div nz-col nzXs="24" nzSm="24" class="mt-md">
+        <button class="btn1" nzType="primary" nz-button (click)="doAddTradeAndContactRow()">添加一行</button>
+      </div>
+    </div>
+    <nz-divider></nz-divider>
+    <div class="text-lg">合同相关信息</div>
+    <nz-divider></nz-divider>
+    <div nz-row nzGutter="16" class="bg-white">
+    <div nz-col nzXs="24" nzSm="24">
+      <nz-form-item>
+        <ng-container *ngFor="let ctrl of relatedControls">
+          <nz-form-label [nzSm]="3" [nzXs]="24" [nzRequired]="ctrl.required" [attr.noLabel]="ctrl.noLabel ? true : false"  [ngClass]="{'has-error' : ctrl.error}">
+            <ng-container *ngIf="ctrl.error">
+              <span nzPlacement="topLeft" nz-tooltip [nzTitle]="ctrl.errorMsg"> {{ctrl.noLabel ? '&nbsp;' : ctrl.label}}</span>
+            </ng-container>
+            <ng-container *ngIf="!ctrl.error">
+              {{ctrl.noLabel ? '&nbsp;' : ctrl.label}}
+            </ng-container>
+          </nz-form-label>
+          <nz-form-control [nzSm]="ctrl.colSpan||5" [nzXs]="24" [attr.required]="ctrl.required"  [ngClass]="{'has-error' : ctrl.error}">
+            <app-control [ctrl]="ctrl" [form]="formData.step1FormGroup"></app-control>
+          </nz-form-control>
+          <ng-container *ngIf="ctrl.nl">
+            <nz-form-control [nzSm]="24" [nzXs]="24"></nz-form-control>
+          </ng-container>
+        </ng-container>
+      </nz-form-item>
+    </div>
+  </div>
+</form>

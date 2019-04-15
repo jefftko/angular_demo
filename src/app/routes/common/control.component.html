@@ -1,0 +1,41 @@
+<ng-container [formGroup]="form">
+  <input type="hidden" nz-input [formControl]="control" [formControlName]="ctrl.name" *ngIf="ctrl.type == 'hidden'">
+
+  <input nz-input [formControl]="control" [formControlName]="ctrl.name" (blur)="onBlur()"
+         [type]="ctrl.type||'text'" [attr.disabled]="ctrl.disabled" [attr.readonly]="ctrl.readonly" [required]="ctrl.required"
+         [placeholder]="ctrl.disabled ? '' : (ctrl.placeholder||'请输入' + ctrl.label)" *ngIf="!ctrl.type"/>
+
+  <nz-input-number [formControl]="control" *ngIf="ctrl.type == 'number'" (ngModelChange)="onModelChange($event)" (nzBlur)="onBlur($event)"
+                   [nzStep]="ctrl.nzStep||1"
+                   [required]="ctrl.required"
+                   [nzDisabled]="ctrl.disabled"
+                   [nzFormatter]="numberFormatter"
+                   class="se__control"></nz-input-number>
+
+  <nz-input-group nzSearch class="se__control" [nzSuffix]="suffixButton" *ngIf="ctrl.type == 'modal'">
+    <input type="text" nz-input [placeholder]="ctrl.disabled ? '' : (ctrl.placeholder||'请选择' + ctrl.label)" [required]="ctrl.required"
+           [formControl]="control" [attr.disabled]="ctrl.disabled">
+    <ng-template #suffixButton>
+      <button nz-button [nzType]="ctrl.disabled ? '' : 'primary'" nzSearch (click)="showModal()"><i nz-icon type="ellipsis"></i></button>
+    </ng-template>
+  </nz-input-group>
+
+  <nz-select class="se__control" [formControl]="control" [nzAllowClear]="!ctrl.noClear" [required]="ctrl.required"
+             *ngIf="ctrl.type == 'select'" [attr.disabled]="ctrl.disabled" [nzDisabled]="ctrl.disabled"
+             (ngModelChange)="onModelChange($event)">
+    <nz-option *ngFor="let option of ctrl.options" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+  </nz-select>
+
+  <nz-date-picker class="se__control" *ngIf="ctrl.type == 'date'" [required]="ctrl.required"
+                  (ngModelChange)="onModelChange($event)"
+                  [nzFormat]="'yyyy-MM-dd'"
+                  [formControl]="control"
+                  [nzDisabled]="ctrl.disabled"
+                  [attr.disabled]="ctrl.disabled"></nz-date-picker>
+
+  <textarea rows="4" nz-input [formControl]="control" *ngIf="ctrl.type == 'textarea'" [attr.disabled]="ctrl.disabled" [required]="ctrl.required"></textarea>
+
+  <label nz-checkbox [formControl]="control" *ngIf="ctrl.type == 'checkbox'" [required]="ctrl.required" [attr.disabled]="ctrl.disabled" [nzDisabled]="ctrl.disabled">{{ctrl.label}}</label>
+</ng-container>
+
+

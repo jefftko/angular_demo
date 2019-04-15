@@ -1,0 +1,52 @@
+<form nz-form [formGroup]="formData.step4FormGroup" class="bg-white">
+  <div nz-row nzGutter="16" class="bg-white">
+    <div nz-col nzXs="24" nzSm="24">
+      <nz-table [nzScroll]="{x:'1300px'}" [nzData]="tabForm.value" nzShowPagination="false" formArrayName="tabForm">
+        <thead>
+        <tr>
+          <th nzLeft="0px" nzWidth="120px">&nbsp;</th>
+          <ng-container *ngFor="let ctrl of ctrlTpl">
+            <th [nzWidth]="(ctrl.width) + 'px'" [ngClass]="{hidden_field : ctrl.type == 'hidden'}">{{ctrl.label}}</th>
+          </ng-container>
+          <th nzWidth="80px" nzRight="0px">删除</th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngFor="let formGroup of tabForm.controls; let i = index;" [formGroup]="formGroup">
+          <tr>
+            <td nzLeft="0px"><button nzType="primary" nz-button (click)="showClauseContent(i)">查看条款</button></td>
+            <ng-container *ngFor="let ctrl of ctrls[i]">
+              <td [attr.required]="ctrl.required" [ngClass]="{'has-error' : ctrl.error, 'hidden_field' : ctrl.type == 'hidden'}">
+                <app-control [ctrl]="ctrl" [form]="formGroup" [tableIndex]="i"></app-control>
+              </td>
+            </ng-container>
+            <td nzRight="0px">
+              <button nzType="danger" nzSize="default" nz-button (click)="removeRow(i)">删除</button>
+            </td>
+          </tr>
+          <tr [nzExpand]="expanding[i]">
+            <td>条款内容</td>
+            <td colspan="5">
+              <app-control [ctrl]="extendCtrls[i]" [form]="formGroup" [tableIndex]="i"></app-control>
+            </td>
+            <td></td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+  <div nz-row nzGutter="16" class="mt-md">
+    <div nz-col nzSm="24" nzXs="24" class="pl-lg">
+      <nz-form-control [nzSm]="2" [nzXs]="2">
+        <button class="btn1" nz-button (click)="doAdd()">添加条款</button>
+      </nz-form-control>
+      <nz-form-control [nzSm]="4" [nzXs]="20">
+        <app-control [ctrl]="selectClauseFromTpl" [form]="formData.step4FormGroup"></app-control>
+      </nz-form-control>
+      <nz-form-control [nzSm]="2" [nzXs]="2">
+        <button class="btn1" nz-button (click)="doSaveClauseFromTpl()">从模板添加条款</button>
+      </nz-form-control>
+    </div>
+  </div>
+</form>

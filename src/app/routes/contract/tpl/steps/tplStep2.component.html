@@ -1,0 +1,35 @@
+<form nz-form [formGroup]="form">
+
+  <nz-tabset>
+    <nz-tab nzTitle="主要信息" (nzClick)="switchTab(0)">
+      <app-grid-control [template]="tab1CtrlTpl" [config]="step2GridConfig" #grid1></app-grid-control>
+    </nz-tab>
+    <nz-tab nzTitle="关联信息" (nzClick)="switchTab(1)">
+      <app-grid-control [template]="tab2CtrlTpl" [config]="step2GridConfig" #grid2></app-grid-control>
+    </nz-tab>
+  </nz-tabset>
+
+  <div nz-row nzGutter="16" class="mt-md">
+    <div nz-col nzSm="24" nzXs="24">
+      <nz-form-control [nzSm]="2" [nzXs]="2">
+        <button class="btn1" nz-button (click)="addRow()">添加一行</button>
+      </nz-form-control>
+      <nz-form-label [nzSm]="1" [nzXs]="1">税率</nz-form-label>
+      <nz-form-control [nzSm]="2" [nzXs]="2">
+        <nz-select formControlName="taxRate" nzAllowClear>
+          <nz-option *ngFor="let option of taxOptions" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+        </nz-select>
+      </nz-form-control>
+      <nz-form-control [nzSm]="2" [nzXs]="2">
+        <button class="btn1" nz-button (click)="onTaxChange()">修改税率</button>
+      </nz-form-control>
+      <nz-form-label [nzSm]="2" [nzXs]="2">到货时间</nz-form-label>
+      <nz-form-control [nzSm]="3" [nzXs]="3">
+        <nz-date-picker formControlName="deliveryDate"></nz-date-picker>
+      </nz-form-control>
+      <nz-form-control [nzSm]="2" [nzXs]="2">
+        <button class="btn1" nz-button (click)="doUpdateDate()">修改到货时间</button>
+      </nz-form-control>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,52 @@
+<div class="alain-default__content-title">
+  <h1>
+      合同主页
+    <small>欢迎 !</small>
+  </h1>
+</div>
+<div nz-row nzGutter="16">
+  <div nz-col nzXs="24">
+    <nz-card [nzTitle]="growthTitle" [nzBordered]="false">
+      <ng-template #growthTitle>
+          合同信息统计图
+        <small class="text-sm font-weight-normal"></small>
+      </ng-template>
+      <g2-pie *ngIf="pieData" [hasLegend]="true" title="合同信息统计" subTitle="信息统计图" [total]="total" [valueFormat]="format" [data]="pieData" height="350"></g2-pie>
+    </nz-card>
+  </div>
+</div>
+<div nz-row nzGutter="16">
+  <div nz-col nzXs="24">
+    <nz-card nzTitle="合同审批情况" [nzBordered]="false" class="ant-card__body-nopadding">
+        <dx-data-grid id="gridContainer"
+    [dataSource]="approvalSource"
+    [showBorders]="true">
+            <dxi-column *ngFor="let item of approvalField" dataField="{{item.field}}" caption="{{item.title}}"></dxi-column>
+    <dxo-remote-operations
+        [sorting]="true"
+        [paging]="true">
+    </dxo-remote-operations>
+    <dxo-paging [pageSize]="12"></dxo-paging>
+</dx-data-grid>
+  
+    </nz-card>
+  </div>
+</div>
+
+<div nz-row nzGutter="16">
+  <div nz-col nzXs="24">
+    <nz-card nzTitle="合同付款信息" [nzBordered]="false" class="ant-card__body-nopadding">
+        <dx-data-grid id="gridContainer_1"
+    [dataSource]="paymentSource"
+    [showBorders]="true">
+    <dxi-column *ngFor="let item of paymentField" dataField="{{item.field}}" caption="{{item.title}}"></dxi-column>
+    <dxo-remote-operations
+        [sorting]="true"
+        [paging]="true">
+    </dxo-remote-operations>
+    <dxo-paging [pageSize]="12"></dxo-paging>
+</dx-data-grid>
+  
+    </nz-card>
+  </div>
+</div>

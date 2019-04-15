@@ -1,0 +1,79 @@
+<div class="alain-default__content-title">
+  <h1>{{pageTitle}} (录入进度{{formData.step}}/6)</h1>
+</div>
+<ng-template #contractHeader>
+  <div>
+    <nz-steps [nzCurrent]="formData.step - 1">
+      <nz-step class="point" [nzTitle]="title" *ngFor="let title of formData.stepTitles; let i = index;" (click)="setStep(i + 1)"></nz-step>
+    </nz-steps>
+  </div>
+</ng-template>
+<modal-page [config]="ctx.modalConfig"></modal-page>
+<nz-card class="alain-default__unwrap" [nzTitle]="contractHeader">
+  <nz-spin nzTip='Loading...' [nzSpinning]="ctx.spinning">
+    <div nz-row nzGutter="16" class="bg-white" nzjustify="end">
+      <div nz-col nzXs="24" nzSm="24" class="text-right">
+        <div class="d-inline-flex width-100">
+          <div class="d-inline-flex text-lg flex-grow-1">
+            {{contractStepHeader}}
+          </div>
+          <div class="d-inline-flex flex-grow-0">
+            <button nz-button nzSize="small" nzType="primary" [disabled]="formData.step == 1" (click)="prevStep()">上一步</button>
+            <button nz-button nzSize="small" nzType="primary" [disabled]="formData.step == 6" (click)="nextStep()">下一步</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nz-divider></nz-divider>
+    <app-contract-create-step1 *ngIf="formData.step == 1"></app-contract-create-step1>
+    <app-contract-create-step2 *ngIf="formData.step == 2"></app-contract-create-step2>
+    <app-contract-create-step3 *ngIf="formData.step == 3"></app-contract-create-step3>
+    <app-contract-create-step4 *ngIf="formData.step == 4"></app-contract-create-step4>
+    <app-contract-create-step5 *ngIf="formData.step == 5"></app-contract-create-step5>
+    <app-contract-create-step6 *ngIf="formData.step == 6"></app-contract-create-step6>
+    <nz-divider></nz-divider>
+    <div nz-row nzGutter="16" class="bg-white" nzjustify="end">
+      <div nz-col nzXs="24" nzSm="24" class="text-right">
+        <button class="btn1" nzType="primary" nz-button (click)="doSave()">保存</button>
+        <button class="btn1" nz-button nzType="primary" (click)="gotoApprove()">提交审批</button>
+        <button class="btn1" nz-button nzType="primary" (click)="showHistory()">合同历史版本</button>
+        <button class="btn2" nz-button nzType="primary">审批历史纪录</button>
+        <button class="btn3" nz-button nzType="primary" [disabled]="true">取消合同</button>
+        <button class="btn3" nz-button nzType="primary">作废合同</button>
+        <button class="btn1" nz-button nzType="primary">组织分配</button>
+        <button class="btn1" nz-button nzType="primary" [disabled]="true">合同修改</button>
+        <button class="btn2" nz-button nzType="primary" [disabled]="true">浏览合规审查</button>
+      </div>
+    </div>
+    <nz-divider></nz-divider>
+    <div nz-row nzGutter="16" class="bg-white" nzjustify="end" class="">
+      <div nz-col nzxs="12" nzSm="12">
+        <button nz-button nzSize="small" nzType="primary" [disabled]="formData.step == 1" (click)="prevStep()">上一步</button>
+      </div>
+      <div nz-col nzxs="12" nzSm="12" class="text-right">
+        <button nz-button nzSize="small" nzType="primary" [disabled]="formData.step == 6" (click)="nextStep()">下一步</button>
+      </div>
+    </div>
+  </nz-spin>
+</nz-card>
+<nz-modal [nzVisible]="historyVisible" [nzWidth]="600" nzMask nzClosable (nzOnCancel)="historyVisible = false"
+          nzTitle="合同历史版本" [nzCancelText]="null" (nzOnOk)="historyVisible = false">
+  <nz-table #hisTab [nzData]="contractHistory" [nzShowPagination]="false">
+    <thead>
+    <tr>
+      <th [nzWidth]="100">版本号</th>
+      <th [nzWidth]="100">状态</th>
+      <th [nzWidth]="100">修改人</th>
+      <th [nzWidth]="160">修改时间</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let data of hisTab.data">
+      <td>{{data.versionNum}}</td>
+      <td>{{data.contractStatus}}</td>
+      <td>{{data.lastUpdateBy}}</td>
+      <td>{{data.lastUpdateDate}}</td>
+    </tr>
+    </tbody>
+  </nz-table>
+</nz-modal>

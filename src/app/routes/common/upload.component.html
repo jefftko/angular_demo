@@ -1,0 +1,30 @@
+<!-- 弹出框内容-->
+<nz-modal [nzWidth]="500" nzMask nzClosable *ngIf="config.visible" [nzVisible]="true"
+          nzTitle="附件上传" (nzOnCancel)="handleCancel()" (nzOnOk)="doUpload(uploadForm)" [nzOkLoading]="okLoading">
+  <form #uploadForm="ngForm">
+    <div nz-row nzGutter="16">
+      <div nz-col nzXs="24" nzSm="24">
+        <nz-form-label [nzSm]="4" nzFor="searchType">附件名称</nz-form-label>
+        <nz-form-control [nzSm]="10" [ngClass]="{'has-error' : attachmentName.invalid && attachmentName.dirty}">
+          <input nz-input placeholder="请输入附件名称" [(ngModel)]="attachmentCtrl.value"
+                 name="attachmentName" required #attachmentName="ngModel"
+                 class="form-control"/>
+        </nz-form-control>
+        <nz-form-control [nzSm]="10" [nzXs]="24">
+          <nz-upload [nzAction]="config.action"
+                     nzName="file" [nzShowUploadList]="{showPreviewIcon : true, showRemoveIcon : false}"
+                     (nzChange)="onFileChange($event)">
+            <button nz-button>
+              <i nz-icon type="upload"></i><span>附件上传</span>
+            </button>
+          </nz-upload>
+        </nz-form-control>
+      </div>
+      <div nz-col nzXs="24" nzSm="24">
+        <nz-form-control [nzOffset]="4" [nzSm]="20" [nzXs]="20" *ngIf="attachmentId.touched && !attachmentId.value">
+          <nz-alert nzType="error" nzMessage="请上传文件！" nzShowIcon></nz-alert>
+        </nz-form-control>
+      </div>
+    </div>
+  </form>
+</nz-modal>

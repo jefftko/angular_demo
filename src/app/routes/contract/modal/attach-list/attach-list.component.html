@@ -1,0 +1,32 @@
+<!-- 弹出框内容-->
+<nz-modal nzMask nzClosable *ngIf="config.visible" [nzVisible]="true"
+          nzTitle="查看附件" (nzOnCancel)="handleCancel()" (nzOnOk)="handleCancel()" [nzOkLoading]="okLoading">
+
+<dx-data-grid #grid id="attachListContainer"
+    [dataSource]="dataSource"
+    [showBorders]="true"
+    [allowColumnResizing]="true"
+    [columnAutoWidth]="true"
+    [hoverStateEnabled]="true"
+    rowTemplate="rowTemplateName"
+    >
+    <dxi-column *ngFor="let item of dataField" dataField="{{item.field}}" caption="{{item.title}}" cellTemplate="{{item.template}}"></dxi-column>
+      <tbody class="employee dx-row" *dxTemplate="let data of 'rowTemplateName'">
+        <tr class="main-row"  >
+            <td *ngFor="let item of dataField">
+                <div *ngIf="item.template=='text'">
+                    {{data.data[item.field]}}
+                </div>
+             <button nz-button type="button" nzType="primary" *ngIf="item.template=='button'" (click)="handleBtn(data.data)"><i nz-icon type="download"></i>{{item.title}}</button>
+              </td>
+        </tr>
+      </tbody>
+      <dxo-paging [pageSize]="12"></dxo-paging>
+
+
+</dx-data-grid>
+
+
+
+
+</nz-modal>

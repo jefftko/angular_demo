@@ -1,0 +1,70 @@
+<form nz-form [formGroup]="form">
+
+  <!--<button nz-button nzType="primary" (click)="removeDisabled()">Remove disabled</button>-->
+  <!--<input nz-input name="testInput" formControlName="testInput">-->
+
+    <div class="hidden-input">
+      <ng-container *ngFor="let ctrl of hiddenControls">
+        <app-control [ctrl]="ctrl" [form]="form"></app-control>
+      </ng-container>
+    </div>
+
+    <div nz-row nzGutter="16" class="bg-white">
+      <div nz-col nzXs="24" nzSm="24">
+        <nz-form-item>
+          <ng-container *ngFor="let ctrl of basicControls">
+            <nz-form-label [nzSm]="2" [nzXs]="24" [nzRequired]="ctrl.required" [nzFor]="ctrl.name" [attr.noLabel]="ctrl.noLabel ? true : false" [ngClass]="{'has-error' : ctrl.error}">
+              <ng-container *ngIf="ctrl.error">
+                <span nzPlacement="topLeft" nz-tooltip [nzTitle]="ctrl.errorMsg">{{ctrl.noLabel ? '&nbsp;' : ctrl.label}}</span>
+              </ng-container>
+              <ng-container *ngIf="!ctrl.error">
+                {{ctrl.noLabel ? '&nbsp;' : ctrl.label}}
+              </ng-container>
+            </nz-form-label>
+            <nz-form-control [nzSm]="ctrl.colSpan||4" [nzXs]="24" [attr.required]="ctrl.required" [ngClass]="{'has-error' : ctrl.error}">
+              <app-control [ctrl]="ctrl" [form]="form"></app-control>
+            </nz-form-control>
+            <ng-container *ngIf="ctrl.nl">
+              <nz-form-control [nzSm]="24" [nzXs]="24"></nz-form-control>
+            </ng-container>
+          </ng-container>
+        </nz-form-item>
+      </div>
+    </div>
+    <nz-divider></nz-divider>
+    <div class="text-lg">交易方及联系人</div>
+    <nz-divider></nz-divider>
+    <div nz-row nzGutter="16" class="bg-white">
+      <div nz-col nzXs="24" nzSm="24">
+        <app-grid-control [template]="tabControlsTpl" [config]="{canDelete : true, tableMode : true}" #contacts></app-grid-control>
+      </div>
+      <div nz-col nzXs="24" nzSm="24" class="mt-md">
+        <button class="btn1" nzType="primary" nz-button (click)="grid.addRow()">添加一行</button>
+      </div>
+    </div>
+    <nz-divider></nz-divider>
+    <div class="text-lg">合同相关信息</div>
+    <nz-divider></nz-divider>
+    <div nz-row nzGutter="16" class="bg-white">
+    <div nz-col nzXs="24" nzSm="24">
+      <nz-form-item>
+        <ng-container *ngFor="let ctrl of relatedControls">
+          <nz-form-label [nzSm]="3" [nzXs]="24" [nzRequired]="ctrl.required" [attr.noLabel]="ctrl.noLabel ? true : false"  [ngClass]="{'has-error' : ctrl.error}">
+            <ng-container *ngIf="ctrl.error">
+              <span nzPlacement="topLeft" nz-tooltip [nzTitle]="ctrl.errorMsg"> {{ctrl.noLabel ? '&nbsp;' : ctrl.label}}</span>
+            </ng-container>
+            <ng-container *ngIf="!ctrl.error">
+              {{ctrl.noLabel ? '&nbsp;' : ctrl.label}}
+            </ng-container>
+          </nz-form-label>
+          <nz-form-control [nzSm]="ctrl.colSpan||5" [nzXs]="24" [attr.required]="ctrl.required" [ngClass]="{'has-error' : ctrl.error}">
+            <app-control [ctrl]="ctrl" [form]="form"></app-control>
+          </nz-form-control>
+          <ng-container *ngIf="ctrl.nl">
+            <nz-form-control [nzSm]="24" [nzXs]="24"></nz-form-control>
+          </ng-container>
+        </ng-container>
+      </nz-form-item>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,334 @@
+<div class="alain-default__content-title">
+    <h1>合同变更创建</h1>
+</div>
+
+<form nz-form [formGroup]="form" (ngSubmit)="_submitForm()" [nzLayout]="'vertical'">
+    <nz-card [nzBordered]="false" nzTitle="{{searchWords}}">
+   <nz-row nzGutter="16">
+      <nz-col nzLg="12" nzMd="12" nzSm="24" *ngFor="let item of searchFields">
+        <nz-form-item *ngIf="item.type == 0">
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="{{item.field}}">{{item.title}}:</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <input nz-input  formControlName="{{item.field}}" id="{{item.field}}" placeholder="" />
+          </nz-form-control>
+        </nz-form-item>
+   
+        <nz-form-item *ngIf="item.type == 3">
+           <nz-form-label  [nzSm]="6" [nzXs]="24" nzFor="{{item.field}}">{{item.title}}:</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24">
+
+               <nz-input-group nzSearch [nzSuffix]="suffixButton">
+
+            <input nz-input formControlName="{{item.field}}" id="{{item.field}}" placeholder="" />
+             <ng-template #suffixButton>
+                 <button nzType="primary" [disabled]="item.disabled" type="button" nz-button nzSearch (click)="add(modalContent,item,{})">...</button>
+        </ng-template> 
+          </nz-input-group>
+           </nz-form-control>
+
+        </nz-form-item>
+            <nz-form-item *ngIf="item.type == 4">
+           <nz-form-label  [nzSm]="6" [nzXs]="24" nzFor="{{item.field}}">{{item.title}}:</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24">
+
+         <textarea rows="4" nz-input formControlName="{{item.field}}"></textarea>
+          </nz-form-control>
+        </nz-form-item>
+          <nz-form-item *ngIf="item.type == 5">
+                <input type="hidden" formControlName="{{item.field}}" />
+        </nz-form-item>
+
+
+     </nz-col>
+  
+  </nz-row>
+
+  <div class="form-group" style="text-align:right">
+      <button nz-button type="submit" nzType="primary" [disabled]="currentId != '0'">确定</button>
+      <button nz-button type="button" nzType="primary" (click)="goSignSup()">签订补充合同</button>
+  </div>
+  </nz-card>
+
+
+</form>
+
+<div nz-row [nzGutter]="16">
+  <div nz-col [nzXs]="24">
+    <nz-card [nzBordered]="false" nzTitle="变更明细信息">
+  <nz-card-tab>
+    <nz-tabset nzSize="large" (nzSelectChange)="change($event)">
+      <nz-tab nzTitle="合同行变更"></nz-tab>
+      <nz-tab nzTitle="付款条件"></nz-tab>
+      <nz-tab nzTitle="附件"></nz-tab>
+      <nz-tab nzTitle="条款变更"></nz-tab>
+       </nz-tabset>
+  </nz-card-tab>
+<dx-data-grid *ngIf="documentsIndex == 0" id="documentsContainer0"
+    [dataSource]="documentsSource.lines"
+    [showBorders]="true"
+    [allowColumnResizing]="true"
+    [columnAutoWidth]="true"
+    rowTemplate="rowTemplateName"
+    >
+<dxi-column *ngFor="let item of documentsField.lines" [allowSorting]="false" dataField="{{item.field}}" caption="{{item.title}}"></dxi-column>
+
+ <tbody class="employee dx-row" *dxTemplate="let data of 'rowTemplateName'">
+        <tr class="main-row"  >
+            <td *ngFor="let item of documentsField.lines">
+                <div *ngIf="item.template=='text'">
+                    {{data.data[item.field]}}
+                </div>
+            <input nz-input [disabled]="item.disabled" *ngIf="item.template=='input'" [(ngModel)]="data.data[item.field]">
+            <div *ngIf="item.template=='modal'">
+                    <nz-input-group nzSearch [nzSuffix]="suffixButtons">
+
+                        <input nz-input [disabled]="item.disabled" [(ngModel)]="data.data[item.field]" style="width:120px" placeholder="{{item.title}}"/>
+             <ng-template #suffixButtons>
+          <button nzType="primary" nz-button nzSearch (click)="add(modalContent,item,data.data)">...</button>
+        </ng-template> 
+          </nz-input-group>
+
+            </div>
+              <div *ngIf="item.template=='select'">
+              <nz-select [disabled]="item.disabled" [ngModel]="item.options[0]['value']"  [nzPlaceHolder]="" [nzShowSearch]="true">
+              <nz-option *ngFor="let i of item.options" [nzLabel]="i.label" [nzValue]="i.value">
+              </nz-option>
+            </nz-select>
+        </div>
+
+
+             <button nz-button type="button" nzType="primary" *ngIf="item.template=='button'" (click)="handleBtn(item.type,data.data)"><i nz-icon type="download"></i>{{item.title}}</button>
+
+
+            </td>
+        </tr>
+      </tbody>
+
+
+</dx-data-grid>
+<dx-data-grid *ngIf="documentsIndex == 1" id="documentsContainer1"
+    [dataSource]="documentsSource.terms"
+    [showBorders]="true"
+    [allowColumnResizing]="true"
+    [columnAutoWidth]="true"
+    rowTemplate="rowTemplateName"
+    >
+<dxi-column *ngFor="let item of documentsField.terms" [allowSorting]="false" dataField="{{item.field}}" caption="{{item.title}}"></dxi-column>
+
+ <tbody class="employee dx-row" *dxTemplate="let data of 'rowTemplateName'">
+        <tr class="main-row"  >
+            <td *ngFor="let item of documentsField.terms">
+                <div *ngIf="item.template=='text'">
+                    {{data.data[item.field]}}
+                </div>
+            <input nz-input [disabled]="item.disabled" *ngIf="item.template=='input'" [(ngModel)]="data.data[item.field]">
+            <div *ngIf="item.template=='modal'">
+                    <nz-input-group nzSearch [nzSuffix]="suffixButtons">
+
+                        <input nz-input [disabled]="item.disabled" [(ngModel)]="data.data[item.field]" style="" placeholder="{{item.title}}"/>
+             <ng-template #suffixButtons>
+          <button nzType="primary" [disabled]="item.disabled" nz-button nzSearch (click)="add(modalContent,item,data.data)">...</button>
+        </ng-template> 
+          </nz-input-group>
+
+            </div>
+              <div *ngIf="item.template=='select'">
+              <nz-select [disabled]="item.disabled" style="min-width:120px" [(ngModel)]="data.data[item.field]"  [nzPlaceHolder]="" [nzShowSearch]="true">
+              <nz-option *ngFor="let i of item.options" [nzLabel]="i.label" [nzValue]="i.value">
+              </nz-option>
+            </nz-select>
+        </div>
+
+
+             <button nz-button type="button" style="width:100px" nzType="danger" *ngIf="item.template=='button'" (click)="delTerm(data.data)"><i nz-icon type="delete"></i>{{item.title}}</button>
+
+
+            </td>
+        </tr>
+      </tbody>
+
+
+
+</dx-data-grid>
+<dx-data-grid *ngIf="documentsIndex == 2" id="documentsContainer2"
+    [dataSource]="documentsSource.attachments"
+    [showBorders]="true"
+    [allowColumnResizing]="true"
+    [columnAutoWidth]="true"
+    rowTemplate="rowTemplateName"
+    >
+<dxi-column *ngFor="let item of documentsField.attachments" dataField="{{item.field}}" caption="{{item.title}}"></dxi-column>
+
+ <tbody class="employee dx-row" *dxTemplate="let data of 'rowTemplateName'">
+        <tr class="main-row"  >
+            <td *ngFor="let item of documentsField.attachments">
+                <div *ngIf="item.template=='text'">
+                    {{data.data[item.field]}}
+                </div>
+
+        <button nz-button type="button" nzType="{{item.class}}" *ngIf="item.template=='button'" (click)="handleAttach(item.type,data.data)"><i nz-icon type="{{item.icon}}"></i>
+            {{item.title}}</button>
+            </td>
+        </tr>
+      </tbody>
+
+
+</dx-data-grid>
+<dx-data-grid *ngIf="documentsIndex == 3" id="documentsContainer3"
+    [dataSource]="documentsSource.clausesList"
+    [showBorders]="true"
+    [allowColumnResizing]="true"
+    [columnAutoWidth]="true"
+    rowTemplate="rowTemplateName"
+    >
+<dxi-column *ngFor="let item of documentsField.clausesList" [allowSorting]="false" dataField="{{item.field}}" caption="{{item.title}}"></dxi-column>
+
+ <tbody class="employee dx-row" *dxTemplate="let data of 'rowTemplateName'">
+        <tr class="main-row"  >
+            <td *ngFor="let item of documentsField.clausesList">
+                <div *ngIf="item.template=='text'">
+                    {{data.data[item.field]}}
+                </div>
+            <input nz-input [disabled]="item.disabled" *ngIf="item.template=='input'" [(ngModel)]="data.data[item.field]">
+            <div *ngIf="item.template=='modal'">
+                    <nz-input-group nzSearch [nzSuffix]="suffixButtons">
+
+                        <input nz-input [disabled]="item.disabled" [(ngModel)]="data.data[item.field]" style="" placeholder="{{item.title}}"/>
+             <ng-template #suffixButtons>
+          <button nzType="primary" nz-button nzSearch (click)="add(modalContent,item,data.data)">...</button>
+        </ng-template> 
+          </nz-input-group>
+
+            </div>
+              <div *ngIf="item.template=='select'">
+              <nz-select [disabled]="item.disabled" [(ngModel)]="data.data[item.field]"  [nzPlaceHolder]="" [nzShowSearch]="true">
+              <nz-option *ngFor="let i of item.options" [nzLabel]="i.label" [nzValue]="i.value">
+              </nz-option>
+            </nz-select>
+        </div>
+
+
+        <button nz-button type="button" nzType="{{item.class}}" *ngIf="item.template=='button'" (click)="handleClauses(item.field,data.data)"><i nz-icon type="{{item.icon}}"></i>
+            {{item.title}}</button>
+
+
+            </td>
+        </tr>
+        <tr *ngIf="data.data['showExtra']">
+            <td colspan="4">
+                <textarea rows="4" width="100%" nz-input [(ngModel)]="data.data['clauseContent']"></textarea>
+            </td>
+        </tr>
+      </tbody>
+
+
+</dx-data-grid>
+ <div class="form-group" *ngIf="documentsIndex == 2" style="text-align:left;margin-top:10px">
+      <button nz-button type="button" (click)="uploadAttach()" [disabled]="btnStatus[0]" nzType="primary">上传附件</button>
+      <button nz-button type="button" (click)="showAttach()" [disabled]="btnStatus[0]" nzType="primary">显示列表</button>
+ </div>
+  <div class="form-group" *ngIf="documentsIndex == 3" style="text-align:left;margin-top:10px">
+      <button nz-button type="button" (click)="addClause()" [disabled]="btnStatus[1]" nzType="primary">添加条款</button>
+ </div>
+ <div class="form-group" *ngIf="documentsIndex == 1" style="text-align:left;margin-top:10px">
+      <button nz-button type="button" (click)="addTerm()" [disabled]="btnStatus[2]" nzType="primary">添加一行</button>
+ </div>
+
+
+ <div class="form-group" style="text-align:right;margin-top:10px">
+      <button nz-button type="button" (click)="changeSave()" [disabled]="btnStatus[3]"  nzType="primary">保存</button>
+      <button nz-button type="button" (click)="changeSubmit()" [disabled]="btnStatus[3]" nzType="primary">提交</button>
+      <button nz-button type="button" (click)="changeCancel()" [disabled]="btnStatus[6]"  nzType="primary">取消变更</button>
+      <button nz-button type="button" nzType="primary" (click)="openApprv(modalApprove,{'title':'中止审批历史纪录','type':'CUX_OKC_HEADERS_ALL_SUSPEND'})" [disabled]="btnStatus[4]">审批历史纪录</button>
+      <button nz-button type="button" nzType="primary" (click)="checkRule()" [disabled]="btnStatus[4]">浏览合规审查</button>
+      <button nz-button type="button" nzType="primary" (click)="goChange()" [disabled]="btnStatus[5]">返回</button>
+  </div>
+
+
+    </nz-card>
+
+</div>
+</div>
+
+  
+
+
+<!--自定义模板-->
+
+
+
+
+
+<!-- 弹出框内容-->
+<ng-template #modalContent>
+
+  <form nz-form [nzLayout]="'inline'" (ngSubmit)="getSearchData()" class="search__form">
+    <nz-row [nzGutter]="16">
+     <nz-col nzMd="8" nzSm="24">
+        <nz-form-item>
+          <nz-form-label nzFor="status2">搜索</nz-form-label>
+          <nz-form-control>
+            <nz-select [nzPlaceHolder]="'请选择'" nzId="searchType" name="search.queryName" [(ngModel)]="search.queryName" [nzShowSearch]="true">
+              <nz-option *ngFor="let i of searchField" [nzLabel]="i.title" [nzValue]="i.field"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-control>
+            <input nz-input [(ngModel)]="search.queryWords" name="words" placeholder="请输入" id="no">
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+       <nz-col nzMd="4">
+        <button nz-button type="submit" [nzType]="'primary'" [nzLoading]="loading">查询</button>
+      </nz-col>
+</nz-row>
+  </form>
+
+
+    <dx-data-grid id="searchContainer"
+    [hoverStateEnabled]="true"
+     keyExpr="{{searchField[0]['field']}}"
+    [dataSource]="searchSource"
+    [showBorders]="true"
+    [allowColumnResizing]="true"
+    [columnAutoWidth]="true"
+    [(selectedRowKeys)]="selectedRowKeys"
+    (onSelectionChanged)="selectionChangedHandler($event)"
+    >
+      <dxo-selection mode="single"></dxo-selection>
+
+<dxi-column *ngFor="let item of searchField" [allowSorting]="false" dataField="{{item.field}}" caption="{{item.title}}"></dxi-column>
+</dx-data-grid>
+
+ 
+</ng-template>
+
+<!-- 审批历史-->
+
+<ng-template #modalApprove>
+
+<dx-data-grid id="approveContainer"
+    [dataSource]="aprvSource"
+    [showBorders]="true"
+    [allowColumnResizing]="true"
+    >
+<dxi-column dataField="{{aprvPubField[0].field}}" caption="{{aprvPubField[0].title}}"></dxi-column>
+<dxi-column dataField="{{aprvPubField[1].field}}" caption="{{aprvPubField[1].title}}"></dxi-column>
+<dxi-column dataField="{{aprvPubField[2].field}}" caption="{{aprvPubField[2].title}}"></dxi-column>
+<dxi-column [calculateCellValue]="calculateCellValue" caption="{{aprvPubField[3].title}}"></dxi-column>
+<dxi-column dataField="{{aprvPubField[4].field}}" caption="{{aprvPubField[4].title}}"></dxi-column>
+<dxi-column dataField="{{aprvPubField[5].field}}" caption="{{aprvPubField[5].title}}"></dxi-column>
+<dxi-column dataField="{{aprvPubField[6].field}}" caption="{{aprvPubField[6].title}}"></dxi-column>
+<dxi-column dataField="{{aprvPubField[7].field}}" caption="{{aprvPubField[7].title}}"></dxi-column>
+</dx-data-grid>
+
+</ng-template>
+
+
+
+<app-upload [config]="uploadConfig"></app-upload>
+
+

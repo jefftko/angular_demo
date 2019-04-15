@@ -1,0 +1,44 @@
+<div class="alain-default__content-title">
+  <h1>模板信息录入 (录入进度{{tplService.step}}/6)</h1>
+</div>
+<ng-template #contractHeader>
+  <div>
+    <nz-steps [nzCurrent]="tplService.step - 1">
+      <nz-step class="point" [nzTitle]="title" *ngFor="let title of tplService.stepTitles; let i = index;" (click)="setStep(i + 1)"></nz-step>
+    </nz-steps>
+  </div>
+</ng-template>
+<modal-page [config]="ctx.modalConfig"></modal-page>
+<nz-card class="alain-default__unwrap" [nzTitle]="contractHeader">
+  <nz-spin nzTip='Loading...' [nzSpinning]="ctx.spinning">
+    <div nz-row nzGutter="16" class="bg-white" nzjustify="end">
+      <div nz-col nzXs="24" nzSm="24" class="text-right">
+        <div class="d-inline-flex width-100">
+          <div class="d-inline-flex text-lg flex-grow-1">
+            {{tplService.stepTitles[tplService.step - 1]}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <nz-divider></nz-divider>
+    <app-contract-tpl-step1 *ngIf="tplService.step == 1"></app-contract-tpl-step1>
+    <app-contract-tpl-step2 *ngIf="tplService.step == 2"></app-contract-tpl-step2>
+    <app-contract-tpl-step3 *ngIf="tplService.step == 3"></app-contract-tpl-step3>
+    <app-contract-tpl-step4 *ngIf="tplService.step == 4"></app-contract-tpl-step4>
+    <app-contract-tpl-step5 *ngIf="tplService.step == 5"></app-contract-tpl-step5>
+    <!--<app-contract-create-step2 *ngIf="tplService.step == 2"></app-contract-create-step2>-->
+    <!--<app-contract-create-step3 *ngIf="tplService.step == 3"></app-contract-create-step3>-->
+    <!--<app-contract-create-step4 *ngIf="tplService.step == 4"></app-contract-create-step4>-->
+    <!--<app-contract-create-step6 *ngIf="tplService.step == 5"></app-contract-create-step6>-->
+    <nz-divider></nz-divider>
+    <div nz-row nzGutter="16" class="bg-white" nzjustify="end">
+      <div nz-col nzXs="24" nzSm="24" class="text-right">
+        <button class="btn1" nzType="primary" nz-button (click)="doSave()" [disabled]="tplService.step == 5">保存</button>
+        <button class="btn3" nz-button nzType="primary" (click)="goBack()">返回</button>
+      </div>
+    </div>
+  </nz-spin>
+</nz-card>
+
+      <!--<app-grid-control [template]="tabControlsTpl" [config]="{canDelete : true}" #contacts></app-grid-control>-->
+

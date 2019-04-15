@@ -1,0 +1,26 @@
+<div class="alain-default__header-logo">
+  <a [routerLink]="['/']" class="alain-default__header-logo-link">
+    <img class="alain-default__header-logo-expanded" src="./assets/logo.png" alt="{{settings.app.name}}" style="max-height:56px;" />
+    <img class="alain-default__header-logo-collapsed" src="./assets/logo.png" alt="{{settings.app.name}}" style="max-height:56px;" />
+  </a>
+</div>
+<div class="ac-top-subtext">
+    <h1>合同管理平台</h1>
+    <h5>Contract Management Platform</h5>
+</div>
+<div class="ac-top-search">
+  <header-search class="alain-default__search" [toggleChange]="searchToggleStatus"></header-search>
+</div>
+<div class="ac-top-user">
+<div class="alain-default__nav-wrap">
+  <ul class="alain-default__nav">
+    <li class="hidden-mobile">
+      <header-user></header-user>
+    </li>
+  </ul>
+</div>
+</div>
+
+<div class="ac-top-menu">
+    <header-menu></header-menu>
+</div>

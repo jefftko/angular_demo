@@ -1,0 +1,116 @@
+<form nz-form [formGroup]="formData.step6FormGroup" class="bg-white">
+<div nz-row nzGutter="16" class="bg-white">
+
+  <div nz-col nzXs="24" nzSm="24">
+    <nz-form-item>
+      <ng-container *ngFor="let ctrl of basicControls">
+        <nz-form-label [nzSm]="3" [nzXs]="24">{{ctrl.label}}</nz-form-label>
+        <nz-form-control [nzSm]="ctrl.colSpan||5" [nzXs]="24">
+          <app-control [ctrl]="ctrl" [form]="formData.step6FormGroup"></app-control>
+        </nz-form-control>
+        <ng-container *ngIf="ctrl.nl">
+          <nz-form-control [nzSm]="24" [nzXs]="24"></nz-form-control>
+        </ng-container>
+      </ng-container>
+    </nz-form-item>
+  </div>
+  <nz-divider></nz-divider>
+  <div class="text-lg">合同交易方</div>
+  <nz-divider></nz-divider>
+  <div nz-row nzGutter="16" class="bg-white">
+    <div nz-col nzXs="24" nzSm="24">
+      <nz-table #contactListTab [nzData]="contactList" nzShowPagination="false" [nzScroll]="{x:'2350px'}" >
+        <thead>
+        <tr>
+          <th *ngFor="let ctrl of contactListCtrls" [nzWidth]="(ctrl.width) + 'px'">{{ctrl.label}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of contactListTab.data">
+          <td *ngFor="let ctrl of contactListCtrls">{{data[ctrl.name]}}</td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+  <nz-divider></nz-divider>
+  <div class="text-lg">合同标的</div>
+  <nz-divider></nz-divider>
+  <div nz-row nzGutter="16" class="bg-white">
+    <div nz-col nzXs="24" nzSm="24">
+      <nz-table #lineListTab [nzData]="lineList" nzShowPagination="false" [nzScroll]="{x:'3550px'}" >
+        <thead>
+        <tr>
+          <th *ngFor="let ctrl of lineListCtrls" [nzWidth]="(ctrl.width) + 'px'">{{ctrl.label}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of lineListTab.data">
+          <td *ngFor="let ctrl of lineListCtrls">{{data[ctrl.name]}}</td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+  <nz-divider></nz-divider>
+  <div class="text-lg">合同付款计划</div>
+  <nz-divider></nz-divider>
+  <div nz-row nzGutter="16" class="bg-white">
+    <div nz-col nzXs="24" nzSm="24">
+      <nz-table #payListTab [nzData]="payList" nzShowPagination="false" [nzScroll]="{x:'950px'}" >
+        <thead>
+        <tr>
+          <th *ngFor="let ctrl of payListCtrls" [nzWidth]="(ctrl.width) + 'px'">{{ctrl.label}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of payListTab.data">
+          <td *ngFor="let ctrl of payListCtrls">{{data[ctrl.name]}}</td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+  <nz-divider></nz-divider>
+  <div class="text-lg mb-lg">合同条款</div>
+  <div nz-row nzGutter="16" class="bg-white">
+    <div nz-col nzXs="24" nzSm="24">
+      <nz-table #clauseListTab [nzData]="clauseList" nzShowPagination="false" [nzScroll]="{x:'950px'}" >
+        <tbody>
+        <ng-container *ngFor="let data of clauseListTab.data">
+          <tr>
+            <td width="5%">{{data.serialNumber}}</td>
+            <td width="95%">{{data.clauseTitle}}</td>
+          </tr>
+          <tr *ngIf="data.clauseContent">
+            <td></td>
+            <td class="text-md" style="padding-left: 5%;">{{data.clauseContent}}</td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+  <nz-divider></nz-divider>
+  <div class="text-lg">合同附件</div>
+  <nz-divider></nz-divider>
+  <div nz-row nzGutter="16" class="bg-white">
+    <div nz-col nzXs="24" nzSm="24">
+      <nz-table #attachmentListTab [nzData]="attachmentList" nzShowPagination="false" [nzScroll]="{x:'950px'}" >
+        <thead>
+        <tr>
+          <th *ngFor="let ctrl of attachmentListCtrls" [nzWidth]="(ctrl.width) + 'px'">{{ctrl.label}}</th>
+          <th [nzWidth]="80 + 'px'">导出</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of attachmentListTab.data; let i = index;">
+          <td *ngFor="let ctrl of attachmentListCtrls">{{data[ctrl.name]}}</td>
+          <td><a (click)="gotoDownLoad(i)" target="_blank">下载</a></td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+</div>
+</form>

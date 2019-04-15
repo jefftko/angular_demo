@@ -1,0 +1,18 @@
+<page-header [title]="'弹出框测试'"></page-header>
+  <nz-alert [nzType]="'error'" nzMessage="error" [nzShowIcon]="true" class="mb-lg"></nz-alert>
+
+  <button nz-button (click)="add(modalContent)" [nzType]="'primary'">
+    <i nz-icon type="plus"></i>
+    <span>新建</span>
+  </button>
+
+
+<!-- 弹出框内容-->
+<ng-template #modalContent>
+  <nz-form-item>
+    <nz-form-label nzFor="no">描述</nz-form-label>
+    <nz-form-control>
+      <input nz-input [(ngModel)]="description" name="description" placeholder="请输入" id="no">
+    </nz-form-control>
+  </nz-form-item>
+</ng-template>

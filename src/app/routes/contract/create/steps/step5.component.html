@@ -1,0 +1,39 @@
+<form nz-form [formGroup]="formData.step5FormGroup" class="bg-white">
+  <app-upload [config]="uploadConfig"></app-upload>
+  <div nz-row nzGutter="16" class="bg-white">
+    <div nz-col nzXs="24" nzSm="24" class="mb-md">
+      <button class="btn1" nzType="primary" nz-button (click)="doAddAttachment()">添加附件</button>
+    </div>
+    <div nz-col nzXs="24" nzSm="24">
+      <nz-table [nzScroll]="{x:'1300px'}" [nzData]="tabForm.value" nzShowPagination="false" formArrayName="tabForm">
+        <thead>
+        <tr>
+          <ng-container *ngFor="let ctrl of ctrlTpl">
+            <th [nzWidth]="(ctrl.width) + 'px'">{{ctrl.label}}</th>
+          </ng-container>
+          <th nzWidth="80px">导出</th>
+          <th nzWidth="80px">删除</th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngFor="let formGroup of tabForm.controls; let i = index;" [formGroup]="formGroup">
+          <tr>
+            <ng-container *ngFor="let ctrl of ctrls[i]">
+              <td>
+                {{tabData[i][ctrl.name]}}
+                <app-control [ctrl]="ctrl" [form]="formGroup" [tableIndex]="i" type="hidden"></app-control>
+              </td>
+            </ng-container>
+            <td nzRight="0px">
+              <a (click)="gotoDownLoad(i)" target="_blank">下载</a>
+            </td>
+            <td nzRight="0px">
+              <button nzType="danger" nzSize="default" nz-button (click)="doDeleteAttachment(i)">删除</button>
+            </td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+</form>

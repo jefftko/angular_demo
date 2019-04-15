@@ -1,0 +1,225 @@
+<div class="alain-default__content-title">
+  <h1>合同查询</h1>
+</div>
+
+<form nz-form [formGroup]="form" (ngSubmit)="_submitForm()" [nzLayout]="'vertical'">
+    <nz-card [nzBordered]="false" nzTitle="{{searchWords}}">
+   <nz-row nzGutter="16">
+      <nz-col nzLg="6" nzMd="12" nzSm="24" *ngFor="let item of searchFields">
+        <nz-form-item *ngIf="item.type == 0">
+            <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="{{item.field}}">{{item.title}}:</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <input nz-input formControlName="{{item.field}}" id="{{item.field}}" placeholder="" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item *ngIf="item.type==1">
+
+          <nz-form-label  [nzSm]="8" [nzXs]="24" >{{item.title}}</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+              <nz-select formControlName="{{item.field}}" [ngModel]="item.options[0]['value']"  [nzPlaceHolder]="" [nzShowSearch]="true">
+              <nz-option *ngFor="let i of item.options" [nzLabel]="i.label" [nzValue]="i.value">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item *ngIf="item.type == 3">
+           <nz-form-label [nzSm]="8" [nzXs]="24"  nzFor="{{item.field}}">{{item.title}}:</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24">
+
+               <nz-input-group nzSearch [nzSuffix]="suffixButton">
+
+            <input nz-input formControlName="{{item.field}}" id="{{item.field}}" placeholder="" />
+             <ng-template #suffixButton>
+          <button nzType="primary" type="button" nz-button nzSearch (click)="add(modalContent,item)">...</button>
+        </ng-template> 
+          </nz-input-group>
+           </nz-form-control>
+
+        </nz-form-item>
+     </nz-col>
+  
+  </nz-row>
+  <nz-row nzGutter="16" *ngIf="searchMore == true">
+
+      <nz-col nzLg="6" nzMd="12" nzSm="24" *ngFor="let item of moreSearchFields">
+        <nz-form-item *ngIf="item.type == 0">
+            <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="{{item.field}}">{{item.title}}:</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <input nz-input formControlName="{{item.field}}" id="{{item.field}}" placeholder="" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item *ngIf="item.type==2">
+          <nz-form-label [nzSm]="8" [nzXs]="24">{{item.title}}:</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <nz-date-picker formControlName="{{item.field}}" ></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+        
+        <nz-form-item *ngIf="item.type==1">
+
+          <nz-form-label [nzSm]="8" [nzXs]="24">{{item.title}}:</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <nz-select formControlName="{{item.field}}" [nzPlaceHolder]="" [nzShowSearch]="true">
+              <nz-option *ngFor="let i of item.options" [nzLabel]="i.label" [nzValue]="i.value">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+         <nz-form-item *ngIf="item.type == 3">
+           <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="{{item.field}}">{{item.title}}:</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24">
+
+               <nz-input-group nzSearch [nzSuffix]="suffixButton">
+
+            <input nz-input formControlName="{{item.field}}" id="{{item.field}}" placeholder="" />
+             <ng-template #suffixButton>
+          <button nzType="primary" type="button" nz-button nzSearch (click)="add(modalContent,item)">...</button>
+        </ng-template> 
+          </nz-input-group>
+            </nz-form-control>
+
+        </nz-form-item>
+
+
+      </nz-col>
+</nz-row>
+
+  <div class="form-group" style="text-align:right">
+      <button nz-button type="button" *ngIf="searchMore" (click)="showMore()">简单搜索</button>
+      <button nz-button type="button" *ngIf="searchMore == false"  (click)="showMore()">高级搜索</button>
+    <button nz-button type="submit"  nzType="primary">查询</button>
+    <button nz-button nzType="primary" type="button" (click)="reset()">清空</button>
+  </div>
+  </nz-card>
+
+</form>
+
+<div nz-row [nzGutter]="16">
+  <div nz-col [nzXs]="24">
+    <nz-card [nzBordered]="false" nzTitle="合同列表">
+    <dx-data-grid #grid id="inquiryContainer"
+    [dataSource]="dataSource"
+    keyExpr="{{dataField[0]['field']}}"
+    [showBorders]="true"
+    [allowColumnResizing]="true"
+    [columnAutoWidth]="true"
+    [hoverStateEnabled]="true"
+    (onSelectionChanged)="selectionItem($event)">
+    <dxo-selection mode="single"></dxo-selection>
+    <dxo-export [enabled]="true" fileName="contract" [allowExportSelectedData]="true"></dxo-export>
+
+<dxi-column *ngFor="let item of dataField" dataField="{{item.field}}" caption="{{item.title}}"></dxi-column>
+
+</dx-data-grid>
+<div class="confirm-edit">
+  <button nz-button type="button" nzType="primary" (click)="editContract()">修改合同</button>
+</div>
+       </nz-card>
+  </div>
+</div>
+
+<div nz-row [nzGutter]="16">
+  <div nz-col [nzXs]="24">
+    <nz-card [nzBordered]="false" nzTitle="详细信息">
+  <nz-card-tab>
+    <nz-tabset nzSize="large" (nzSelectChange)="change($event)">
+      <nz-tab nzTitle="合同头"></nz-tab>
+      <nz-tab nzTitle="合同行"></nz-tab>
+      <nz-tab nzTitle="付款条件"></nz-tab>
+      <nz-tab nzTitle="条款"></nz-tab>
+      <nz-tab nzTitle="附件"></nz-tab>
+      <nz-tab nzTitle="合同结算"></nz-tab>
+      <nz-tab nzTitle="合同付款"></nz-tab>
+      <nz-tab nzTitle="合同审批记录"></nz-tab>
+      <nz-tab nzTitle="合同变更"></nz-tab>
+      <nz-tab nzTitle="相关单据"></nz-tab>
+      <nz-tab nzTitle="服务接收单"></nz-tab>
+      <nz-tab nzTitle="合同履约履历"></nz-tab>
+
+    </nz-tabset>
+  </nz-card-tab>
+  <div *ngFor="let field of detailFields;index as idx">
+
+        <nz-row nzGutter="16" *ngIf="detailIndex == 0 && idx == 0">
+      <nz-col nzLg="6" nzMd="12" nzSm="24" *ngFor="let item of detailForm">
+        <nz-form-item >
+            <nz-form-label [nzSm]="8" [nzXs]="24">{{item.title}}</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+              <input nz-input readonly value="{{item['value']}}"  placeholder="" />
+          </nz-form-control>
+        </nz-form-item>
+       </nz-col>
+    </nz-row>
+    <div *ngIf="detailIndex == 3 && idx == 3"  [innerHTML]="detailSource[4]['okcClase'][0]['clauseContent']">
+        
+        
+    </div>
+
+    <dx-data-grid *ngIf="detailIndex ==idx && idx != 3" id="detailContainer{{idx}}"
+    [dataSource]="detailSource[idx+1][detailTab[idx]]"
+    [showBorders]="true"
+    [allowColumnResizing]="true"
+    [columnAutoWidth]="true"
+    >
+<dxi-column *ngFor="let item of field" dataField="{{item.field}}" caption="{{item.title}}"></dxi-column>
+
+</dx-data-grid>
+
+  </div>
+
+  </nz-card>
+
+</div>
+</div>
+ 
+
+<!-- 弹出框内容-->
+<ng-template #modalContent>
+
+  <form nz-form [nzLayout]="'inline'" (ngSubmit)="getSearchData()" class="search__form">
+    <nz-row [nzGutter]="16">
+     <nz-col nzMd="8" nzSm="24">
+        <nz-form-item>
+          <nz-form-label nzFor="status2">搜索</nz-form-label>
+          <nz-form-control>
+            <nz-select [nzPlaceHolder]="'请选择'" nzId="searchType" name="searchType" [(ngModel)]="search.queryName" [nzShowSearch]="true">
+              <nz-option *ngFor="let i of searchField" [nzLabel]="i.title" [nzValue]="i.field"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzMd="12" nzSm="24">
+        <nz-form-item>
+          <nz-form-control>
+            <input nz-input [(ngModel)]="search.queryWords" name="words" placeholder="请输入" id="no">
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+       <nz-col nzMd="4">
+        <button nz-button type="submit" [nzType]="'primary'" [nzLoading]="loading">查询</button>
+      </nz-col>
+
+
+</nz-row>
+  </form>
+
+
+    <dx-data-grid id="searchContainer"
+    [hoverStateEnabled]="true"
+     keyExpr="{{searchField[0]['field']}}"
+    [dataSource]="searchSource"
+    [showBorders]="true"
+    [allowColumnResizing]="true"
+    [columnAutoWidth]="true"
+    [(selectedRowKeys)]="selectedRowKeys"
+    (onSelectionChanged)="selectionChangedHandler($event)"
+    >
+      <dxo-selection mode="single"></dxo-selection>
+
+<dxi-column *ngFor="let item of searchField" dataField="{{item.field}}" caption="{{item.title}}"></dxi-column>
+</dx-data-grid>
+
+ 
+</ng-template>

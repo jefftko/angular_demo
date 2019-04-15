@@ -1,0 +1,160 @@
+<ng-container *ngIf="config && !config.tableMode">
+  <dx-data-grid [dataSource]="_pagingData"
+                [columnAutoWidth]="true"
+                [showBorders]="false"
+                [hoverStateEnabled]="true"
+                [selectedRowKeys]="[]"
+                (onSelectionChanged)="onSelectionChange($event)"
+                [remoteOperations]="true"
+                [sorting]="false"
+                keyExpr="rowNum"
+                rowTemplate="rowTemplateName">
+
+    <dxo-selection mode="single"></dxo-selection>
+
+    <!--<dxo-remote-operations-->
+      <!--[sorting]="true"-->
+      <!--[paging]="true">-->
+    <!--</dxo-remote-operations>-->
+
+    <dxo-paging [pageSize]="5" (pageSizeChange)="onPageSizeChange($event)" (pageIndexChange)="onPageChange($event)"></dxo-paging>
+    <dxo-pager
+      [showPageSizeSelector]="true"
+      [allowedPageSizes]="[5, 10, 20]"
+      [showInfo]="true">
+    </dxo-pager>
+
+    <dxi-column dataField="delete" [width]="80" caption="序号" *ngIf="config && config.index" [allowSorting]="false"></dxi-column>
+    <ng-container *ngFor="let ctrl of template">
+      <dxi-column [dataField]="ctrl.name" [width]="ctrl.width" [caption]="ctrl.label" *ngIf="ctrl.type != 'hidden'"></dxi-column>
+    </ng-container>
+    <dxi-column dataField="delete" [width]="80" caption="删除" *ngIf="config && config.canDelete" cssClass="can-delete"></dxi-column>
+
+    <table>
+      <tr class="main-row dx-row dx-data-row" *dxTemplate="let row of 'rowTemplateName'">
+        <td *ngIf="config && config.index">{{row.data.rowNum + 1}}</td>
+        <ng-container *ngFor="let ctrl of rowCtrls[row.rowIndex]" >
+
+          <td [attr.required]="ctrl.required" *ngIf="ctrl.type != 'hidden'">
+
+            <ng-container *ngIf="ctrl.type == 'text'">{{ctrl.value}}</ng-container>
+
+            <input type="hidden" nz-input [(ngModel)]="ctrl.value" [name]="ctrl.name" *ngIf="ctrl.type == 'hidden'">
+
+            <input nz-input [(ngModel)]="ctrl.value" [name]="ctrl.name" #ctrlModel="ngModel"
+                   [attr.disabled]="ctrl.disabled"
+                   [required]="ctrl.required"
+                   [placeholder]="ctrl.disabled ? '' : (ctrl.placeholder||'请输入' + ctrl.label)" *ngIf="!ctrl.type"/>
+
+            <nz-input-number *ngIf="ctrl.type == 'number'" (ngModelChange)="onModelChange(ctrl, row.rowIndex)" (nzBlur)="onBlur($event)"
+                             [(ngModel)]="ctrl.value" [name]="ctrl.name" #ctrlModel="ngModel"
+                             [nzStep]="ctrl.nzStep||1"
+                             [required]="ctrl.required"
+                             [nzDisabled]="ctrl.disabled"
+                             [nzFormatter]="numberFormatter"
+                             class="se__control"></nz-input-number>
+
+            <nz-input-group nzSearch class="se__control" [nzSuffix]="suffixButton" *ngIf="ctrl.type == 'modal'">
+              <input type="text" nz-input [placeholder]="ctrl.disabled ? '' : (ctrl.placeholder||'请选择' + ctrl.label)" [required]="ctrl.required" #ctrlModel="ngModel"
+                     [(ngModel)]="ctrl.value" [name]="ctrl.name" [attr.disabled]="ctrl.disabled">
+              <ng-template #suffixButton>
+                <button nz-button [nzType]="ctrl.disabled ? '' : 'primary'" nzSearch (click)="showModal(ctrl, row.rowIndex)"><i nz-icon type="ellipsis"></i></button>
+              </ng-template>
+            </nz-input-group>
+
+            <nz-select class="se__control" [(ngModel)]="ctrl.value" [name]="ctrl.name" [nzAllowClear]="!ctrl.noClear" #ctrlModel="ngModel"
+                       *ngIf="ctrl.type == 'select'" [attr.disabled]="ctrl.disabled" [required]="ctrl.required"
+                       (ngModelChange)="onModelChange(ctrl, row.rowIndex)">
+              <nz-option *ngFor="let option of ctrl.options" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+            </nz-select>
+
+            <nz-date-picker class="se__control" *ngIf="ctrl.type == 'date'" #ctrlModel="ngModel"
+                            (ngModelChange)="onModelChange(ctrl, row.rowIndex)"
+                            [nzFormat]="'yyyy-MM-dd'"
+                            [(ngModel)]="ctrl.value" [name]="ctrl.name"
+                            [nzDisabled]="ctrl.disabled"
+                            [required]="ctrl.required"
+                            [attr.disabled]="ctrl.disabled"></nz-date-picker>
+
+            <textarea rows="4" nz-input [(ngModel)]="ctrl.value" [name]="ctrl.name" *ngIf="ctrl.type == 'textarea'" [attr.disabled]="ctrl.disabled" [required]="ctrl.required"></textarea>
+
+            <label nz-checkbox [required]="ctrl.required" [(ngModel)]="ctrl.value" [name]="ctrl.name" *ngIf="ctrl.type == 'checkbox'" [attr.disabled]="ctrl.disabled" [nzDisabled]="ctrl.disabled">{{ctrl.label}}</label>
+
+          </td>
+        </ng-container>
+        <td class="can-delete" *ngIf="config && config.canDelete">
+          <button nzType="danger" nzSize="default" nz-button (click)="removeRow(row.rowIndex)">删除</button>
+        </td>
+      </tr>
+    </table>
+  </dx-data-grid>
+</ng-container>
+<ng-container *ngIf="config && config.tableMode">
+  <nz-table [nzScroll]="{x: angDesignTableWidth + 'px'}" [nzData]="_pagingData" nzShowPagination="false">
+    <thead>
+    <tr>
+      <th [nzWidth]="'80px'" *ngIf="config && config.index">序号</th>
+      <ng-container *ngFor="let ctrl of template">
+        <th [nzWidth]="(ctrl.width) + 'px'" *ngIf="ctrl.type != 'hidden'">{{ctrl.label}}</th>
+      </ng-container>
+      <th nzwidth="80px" nzRight="0px" *ngIf="config && config.canDelete">删除</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let ctrl of rowCtrls; let i = index;">
+      <td *ngIf="config && config.index">{{i + 1}}</td>
+      <ng-container *ngFor="let ctrl of rowCtrls[i]" >
+        <td [attr.required]="ctrl.required" *ngIf="ctrl.type != 'hidden'">
+
+          <ng-container *ngIf="ctrl.type == 'text'">{{ctrl.value}}</ng-container>
+
+          <input type="hidden" nz-input [(ngModel)]="ctrl.value" [name]="ctrl.name" *ngIf="ctrl.type == 'hidden'">
+
+          <input nz-input [(ngModel)]="ctrl.value" [name]="ctrl.name" #ctrlModel="ngModel"
+                 [attr.disabled]="ctrl.disabled"
+                 [required]="ctrl.required"
+                 [placeholder]="ctrl.disabled ? '' : (ctrl.placeholder||'请输入' + ctrl.label)" *ngIf="!ctrl.type"/>
+
+          <nz-input-number *ngIf="ctrl.type == 'number'" (ngModelChange)="onModelChange($event, ctrl, i)"
+                           [(ngModel)]="ctrl.value" [name]="ctrl.name" #ctrlModel="ngModel"
+                           [nzStep]="ctrl.nzStep||1"
+                           [required]="ctrl.required"
+                           [nzDisabled]="ctrl.disabled"
+                           [nzFormatter]="numberFormatter"
+                           class="se__control"></nz-input-number>
+
+          <nz-input-group nzSearch class="se__control" [nzSuffix]="suffixButton" *ngIf="ctrl.type == 'modal'">
+            <input type="text" nz-input [placeholder]="ctrl.disabled ? '' : (ctrl.placeholder||'请选择' + ctrl.label)" [required]="ctrl.required" #ctrlModel="ngModel"
+                   [(ngModel)]="ctrl.value" [name]="ctrl.name" [attr.disabled]="ctrl.disabled">
+            <ng-template #suffixButton>
+              <button nz-button [nzType]="ctrl.disabled ? '' : 'primary'" nzSearch (click)="showModal(ctrl, i)"><i nz-icon type="ellipsis"></i></button>
+            </ng-template>
+          </nz-input-group>
+
+          <nz-select class="se__control" [(ngModel)]="ctrl.value" [name]="ctrl.name" [nzAllowClear]="!ctrl.noClear" #ctrlModel="ngModel"
+                     *ngIf="ctrl.type == 'select'" [attr.disabled]="ctrl.disabled" [required]="ctrl.required"
+                     (ngModelChange)="onModelChange($event, ctrl, i)">
+            <nz-option *ngFor="let option of ctrl.options" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+          </nz-select>
+
+          <nz-date-picker class="se__control" *ngIf="ctrl.type == 'date'" #ctrlModel="ngModel"
+                          (onChange)="onModelChange($event, ctrl, i)"
+                          [nzFormat]="'yyyy-MM-dd'"
+                          [(ngModel)]="ctrl.value" [name]="ctrl.name"
+                          [nzDisabled]="ctrl.disabled"
+                          [required]="ctrl.required"
+                          [attr.disabled]="ctrl.disabled"></nz-date-picker>
+
+          <textarea rows="4" nz-input [(ngModel)]="ctrl.value" [name]="ctrl.name" *ngIf="ctrl.type == 'textarea'" [attr.disabled]="ctrl.disabled" [required]="ctrl.required"></textarea>
+
+          <label nz-checkbox [required]="ctrl.required" [(ngModel)]="ctrl.value" [name]="ctrl.name" *ngIf="ctrl.type == 'checkbox'" [attr.disabled]="ctrl.disabled" [nzDisabled]="ctrl.disabled">{{ctrl.label}}</label>
+
+        </td>
+      </ng-container>
+      <td  nzRight="0px" *ngIf="config && config.canDelete">
+        <button nzType="danger" nzSize="default" nz-button (click)="onRowRemoveClick(i)">删除</button>
+      </td>
+    </tr>
+    </tbody>
+  </nz-table>
+</ng-container>

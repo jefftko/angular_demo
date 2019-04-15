@@ -1,0 +1,46 @@
+<!-- 弹出框内容-->
+<nz-modal [(nzVisible)]="config.isVisible" [nzWidth]="config.width||800" nzMask nzClosable [nzStyle]="{top : '20px'}"
+          [nzTitle]="'搜索' + config.title" [nzFooter]="empty" (nzOnCancel)="handleCancel()">
+  <div nz-row nzGutter="16" class="bg-white">
+    <div nz-col nzXs="24" nzSm="24">
+      <nz-form-label [nzSm]="2" [nzXs]="24" nzFor="searchType">搜索方式</nz-form-label>
+      <nz-form-control [nzSm]="4" [nzXs]="24">
+        <nz-select class="se__control" [(ngModel)]="searchType" name="searchType" id="searchType">
+          <nz-option *ngFor="let option of config.options" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+        </nz-select>
+      </nz-form-control>
+      <nz-form-control [nzSm]="8" [nzXs]="24">
+        <input nz-input [(ngModel)]="searchContent" name="searchContent" placeholder="请输入" id="searchContent">
+      </nz-form-control>
+      <nz-form-control [nzSm]="2" [nzXs]="24">
+        <button nz-button nzType="primary" [nzLoading]="loading" (click)="doSearch()">搜索</button>
+      </nz-form-control>
+    </div>
+  </div>
+  <nz-divider></nz-divider>
+  <div nz-row nzGutter="16" class="bg-white">
+    <div nz-col nzXs="24" nzSm="24">
+      <nz-table #nzTable [nzScroll]="{x:'700px', y : '320px'}" [nzData]="searchResult" [nzShowPagination]="!config.dynamicSearch" [nzPageSize]="config.pageSize || 5">
+        <thead>
+        <tr>
+          <ng-container *ngFor="let ctrl of config.results">
+            <th [nzWidth]="(ctrl.width) + '%'" *ngIf="!ctrl.hide">{{ctrl.label}}</th>
+          </ng-container>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of nzTable.data">
+          <ng-container *ngFor="let ctrl of config.results">
+            <td *ngIf="!ctrl.hide">
+              <a href="javascript:" (click)="doCallBack(data.index)">{{data[ctrl.name]}}</a>
+            </td>
+          </ng-container>
+        </tr>
+        </tbody>
+      </nz-table>
+    </div>
+    <div nz-col nzXs="24" nzsm="24" class="text-right mt-md" *ngIf="config.dynamicSearch">
+      <nz-pagination [nzPageIndex]="page" [nzTotal]="total" [nzPageSize]="config.pageSize || 5" (nzPageIndexChange)="onPageChange($event)" nzHideOnSinglePage></nz-pagination>
+    </div>
+  </div>
+</nz-modal>
