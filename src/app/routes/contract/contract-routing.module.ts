@@ -11,6 +11,7 @@ import {TplComponent} from "./tpl/tpl.component";
 import {ChangeComponent } from './change/change.component';
 import {TplListComponent} from "./tpl/list.component";
 import {ChangeDetailComponent } from './change-detail/change-detail.component';
+import {QingYeComponent } from './qingye/qingye.component';
 
 
 const routes: Routes = [
@@ -26,6 +27,7 @@ const routes: Routes = [
   { path: 'tpl/create', component: TplComponent},
   { path: 'tpl/update/:id', component: TplComponent},
   { path: 'change-detail/:id', component: ChangeDetailComponent},
+  { path: 'qing', component:QingYeComponent},
 ];
 
 @NgModule({

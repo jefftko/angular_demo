@@ -35,6 +35,7 @@ import { AttachListComponent } from './modal/attach-list/attach-list.component';
 //import { ContractService } from './contract.service';
 import {ChangeComponent } from './change/change.component';
 import {ChangeDetailComponent } from './change-detail/change-detail.component';
+import {QingYeComponent } from './qingye/qingye.component';
 
 
 const COMPONENTS = [
@@ -63,6 +64,7 @@ const COMPONENTS = [
   TplStep4Component,
   TplStep5Component,
   TplListComponent,
+  QingYeComponent,
 ];
 
 const COMPONENTS_NOROUNT = [];
